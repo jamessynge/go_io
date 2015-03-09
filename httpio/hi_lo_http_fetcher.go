@@ -1,10 +1,13 @@
-package util
+package httpio
 
 import (
 	"fmt"
-	"github.com/golang/glog"
 	"net/http"
 	"time"
+
+	"github.com/golang/glog"
+
+	"github.com/jamessynge/go_io/goioutil"
 )
 
 type HiLoHttpFetcher interface {
@@ -18,14 +21,14 @@ type HiLoHttpFetcher interface {
 
 type hiLoHttpFetcherState struct {
 	client    *http.Client
-	regulator RateRegulator
+	regulator goioutil.RateRegulator
 	hiCh      chan *simpleHttpFetchRequest
 	loCh      chan *simpleHttpFetchRequest
 	closeCh   chan chan bool
 	closed    bool
 }
 
-func NewHiLoHttpFetcher(client *http.Client, regulator RateRegulator) HiLoHttpFetcher {
+func NewHiLoHttpFetcher(client *http.Client, regulator goioutil.RateRegulator) HiLoHttpFetcher {
 	state := &hiLoHttpFetcherState{
 		client:    client,
 		regulator: regulator,
@@ -81,7 +84,7 @@ func (p *hiLoHttpFetcherState) runHiLoHttpFetcher() {
 	// Use a rate regulated transport that just counts the amount of waiting
 	// that should have happened, then delay the receiving of low priority
 	// by that amount.
-	noWaitRegulator := NewNoWaitRateRegulator(p.regulator)
+	noWaitRegulator := goioutil.NewNoWaitRateRegulator(p.regulator)
 	var hiClient http.Client = *p.client
 	hiClient.Transport = NewRateRegulatedTransport(noWaitRegulator)
 

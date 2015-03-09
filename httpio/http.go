@@ -1,4 +1,4 @@
-package util
+package httpio
 
 import (
 	"errors"
@@ -11,6 +11,9 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/jamessynge/go_io/goioutil"
+	"github.com/jamessynge/go_io/netio"
 )
 
 // TODO Move failure injection out of here, and into consumer of Fetcher.
@@ -234,7 +237,7 @@ func SortHeaderItems(header http.Header) HeaderItems {
 }
 
 func EstimateRequestSize(request *http.Request) (uint64, error) {
-	var w CountingBitBucketWriter
+	var w goioutil.CountingBitBucketWriter
 	err := request.Write(&w)
 	return w.Size(), err
 }
@@ -291,7 +294,7 @@ func GetServerTime(response *http.Response) (serverTime time.Time, found bool) {
 	return
 }
 
-func NewRateRegulatedTransport(regulator RateRegulator) *http.Transport {
+func NewRateRegulatedTransport(regulator goioutil.RateRegulator) *http.Transport {
 	baseDialer := &net.Dialer{
 		Timeout:   30 * time.Second,
 		KeepAlive: 30 * time.Second,
@@ -299,7 +302,7 @@ func NewRateRegulatedTransport(regulator RateRegulator) *http.Transport {
 	dialFn := func(network, addr string) (net.Conn, error) {
 		conn, err := baseDialer.Dial(network, addr)
 		if conn != nil {
-			conn = NewRateRegulatedConn(conn, regulator)
+			conn = netio.NewRateRegulatedConn(conn, regulator)
 		}
 		return conn, err
 	}

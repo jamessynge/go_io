@@ -1,12 +1,15 @@
-package util
+package netio
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/golang/glog"
 	"net"
 	"sync/atomic"
 	"time"
+
+	"github.com/golang/glog"
+
+	"github.com/jamessynge/go_io/goioutil"
 )
 
 // Assuming here that a connection is used by only a single caller at a time,
@@ -41,7 +44,7 @@ type rrcHelper struct {
 	doLog2 glog.Verbose
 }
 
-func (p *rrcHelper) waitBefore(bBytes int, regulator RateRegulator) {
+func (p *rrcHelper) waitBefore(bBytes int, regulator goioutil.RateRegulator) {
 	if p.started {
 		panic("Already called waitBefore")
 	}
@@ -70,7 +73,7 @@ func (p *rrcHelper) waitBefore(bBytes int, regulator RateRegulator) {
 	p.ioStart = time.Now()
 }
 
-func (p *rrcHelper) waitAfter(offered, actual int, regulator RateRegulator) {
+func (p *rrcHelper) waitAfter(offered, actual int, regulator goioutil.RateRegulator) {
 	done := time.Now()
 	if !p.started {
 		panic("Haven't called waitBefore")
@@ -150,7 +153,7 @@ func (p *rrcHelper) waitAfter(offered, actual int, regulator RateRegulator) {
 
 type RateRegulatedConn struct {
 	net.Conn
-	regulator RateRegulator
+	regulator goioutil.RateRegulator
 
 	id           int32
 	openTime     time.Time
@@ -164,7 +167,7 @@ type RateRegulatedConn struct {
 
 var rrcLastId int32
 
-func NewRateRegulatedConn(conn net.Conn, regulator RateRegulator) net.Conn {
+func NewRateRegulatedConn(conn net.Conn, regulator goioutil.RateRegulator) net.Conn {
 	// Should we be logging? I want to do this once for perf reasons (though
 	// logging itself is expensive).
 	doLog1 := glog.V(1)

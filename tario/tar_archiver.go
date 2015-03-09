@@ -1,4 +1,4 @@
-package util
+package tario
 
 import (
 	"archive/tar"

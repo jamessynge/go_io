@@ -1,9 +1,12 @@
-package util
+package httpio
 
 import (
-	//	"github.com/golang/glog"
 	"net/http"
 	"time"
+
+	//	"github.com/golang/glog"
+
+	"github.com/jamessynge/go_io/goioutil"
 )
 
 type HttpRegulatedFetchResponse struct {
@@ -20,7 +23,7 @@ type HttpRegulatedFetcher interface {
 
 type simpleHttpRegulatedFetcher struct {
 	client    *http.Client
-	regulator RateRegulator
+	regulator goioutil.RateRegulator
 	doWait    bool
 }
 
@@ -42,7 +45,7 @@ func (p *simpleHttpRegulatedFetcher) HttpRegulatedFetch(
 }
 
 func NewHttpRegulatedFetcher(
-	client *http.Client, regulator RateRegulator, doWait bool) HttpRegulatedFetcher {
+	client *http.Client, regulator goioutil.RateRegulator, doWait bool) HttpRegulatedFetcher {
 	if client == nil {
 		client = http.DefaultClient
 	}

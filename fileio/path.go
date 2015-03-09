@@ -1,4 +1,4 @@
-package util
+package fileio
 
 import (
 	"bytes"
@@ -10,6 +10,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/golang/glog"
+
+	"github.com/jamessynge/go_io/goioutil"
 )
 
 func ChooseUniqueName(dir, base, ext string) (string, error) {
@@ -120,7 +122,7 @@ func ExpandPathGlobs(paths, sep string) (expansion []string, err error) {
 	if sep == "" {
 		sep = string(os.PathListSeparator)
 	}
-	errs := NewErrors()
+	errs := goioutil.NewErrors()
 	for _, glob := range strings.Split(paths, sep) {
 		glog.V(1).Infof("Expanding %q", glob)
 		glob = strings.TrimSpace(glob)

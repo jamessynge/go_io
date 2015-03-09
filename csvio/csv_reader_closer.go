@@ -1,10 +1,12 @@
-package util
+package csvio
 
 import (
 	"encoding/csv"
 	"io"
 
 	"github.com/golang/glog"
+
+	"github.com/jamessynge/go_io/fileio"
 )
 
 // Interface exposing csv.Reader operations Read (next record) and ReadAll (all
@@ -48,7 +50,7 @@ func NewCsvReaderCloser(rc io.ReadCloser) *CsvReaderCloser {
 // and returns a CsvReaderCloser.
 func OpenReadCsvFile(filePath string) (crc *CsvReaderCloser, err error) {
 	// Open the file for reading.
-	rc, err := OpenReadFile(filePath)
+	rc, err := fileio.OpenReadFile(filePath)
 	if err != nil {
 		return
 	}

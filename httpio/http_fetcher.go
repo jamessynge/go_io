@@ -1,4 +1,4 @@
-package util
+package httpio
 
 import (
 	"errors"
@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/jamessynge/go_io/goioutil"
 )
 
 type HttpFetchResponse struct {
@@ -69,7 +71,7 @@ func DoHttpRequest(client *http.Client, request *http.Request) *HttpFetchRespons
 }
 
 func (p *HttpFetchResponse) EstimateSize() (size64 uint64, err error) {
-	var w CountingBitBucketWriter
+	var w goioutil.CountingBitBucketWriter
 	if p.Response != nil {
 		err = p.Response.Write(&w)
 	}
@@ -168,7 +170,7 @@ func simpleHttpFetcherFunc(
 }
 
 type regulatedHttpFetcherState struct {
-	regulator RateRegulator
+	regulator goioutil.RateRegulator
 	inCh      chan<- *simpleHttpFetchRequest
 	closeCh   chan chan bool
 	doWait    bool
@@ -247,7 +249,7 @@ func (p *regulatedHttpFetcherState) Close() {
 }
 
 func NewRegulatedHttpFetcher(
-	client *http.Client, regulator RateRegulator, doWait bool) HttpFetcher {
+	client *http.Client, regulator goioutil.RateRegulator, doWait bool) HttpFetcher {
 	if client == nil {
 		client = http.DefaultClient
 	}

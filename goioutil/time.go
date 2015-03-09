@@ -1,4 +1,4 @@
-package util
+package goioutil
 
 /*
 On MS Windows, to track how well system time is tracking an NTP server, try

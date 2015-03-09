@@ -1,4 +1,4 @@
-package util
+package gzipio
 
 import (
 	"compress/gzip"
