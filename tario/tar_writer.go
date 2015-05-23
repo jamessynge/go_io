@@ -5,10 +5,12 @@ import (
 	"bufio"
 	"compress/gzip"
 	"errors"
-	"github.com/golang/glog"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/golang/glog"
+	"github.com/jamessynge/go_io/fileio"
 )
 
 type TarWriter struct {
@@ -38,13 +40,13 @@ func NewTarWriter(file *os.File, compress bool) *TarWriter {
 // return an error.
 func MakeTarWriter(path string) (*TarWriter, error) {
 	dir := filepath.Dir(path)
-	if !Exists(dir) {
+	if !fileio.Exists(dir) {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			glog.Errorf("Unable to create directory: %s\nError: %v", dir, err)
 			return nil, err
 		}
 	}
-	if Exists(path) {
+	if fileio.Exists(path) {
 		glog.Infof("Replacing older archive: %s", path)
 		if err := os.Remove(path); err != nil {
 			glog.Errorf("Unable to delete older output: %s\nError: %v", path, err)

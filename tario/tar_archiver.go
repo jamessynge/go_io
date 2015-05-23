@@ -3,9 +3,12 @@ package tario
 import (
 	"archive/tar"
 	"fmt"
-	"github.com/golang/glog"
 	"path/filepath"
 	"time"
+
+	"github.com/golang/glog"
+	"github.com/jamessynge/go_io/fileio"
+	"github.com/jamessynge/go_io/goioutil"
 )
 
 // Creates tar files whose file path and entry names are based on time.Time
@@ -52,7 +55,7 @@ func (p *DatedTarArchiver) GetPathFragment(timestamp time.Time) string {
 func (p *DatedTarArchiver) GetTarWriter(
 	timestamp time.Time) (*TarWriter, error) {
 	fragment := p.GetPathFragment(timestamp)
-	errs := NewErrors()
+	errs := goioutil.NewErrors()
 	if p.currentTar != nil {
 		if p.currentFragment == fragment {
 			return p.currentTar, nil
@@ -66,7 +69,7 @@ func (p *DatedTarArchiver) GetTarWriter(
 	dirFrag, baseFrag := filepath.Split(fragment)
 	dir := filepath.Join(p.RootDir, dirFrag)
 
-	file, path, err := OpenUniqueFile(
+	file, path, err := fileio.OpenUniqueFile(
 		dir, baseFrag, ".tar.gz", 0755, 0644)
 	if err != nil {
 		errs.AddError(err)
@@ -110,7 +113,7 @@ func (p *DatedTarArchiver) Close() error {
 
 func (p *DatedTarArchiver) AddHeaderAndParts(
 	timestamp time.Time, hdr *tar.Header, parts [][]byte) error {
-	errs := NewErrors()
+	errs := goioutil.NewErrors()
 	tw, err := p.GetTarWriter(timestamp)
 	errs.AddError(err)
 	if tw != nil {

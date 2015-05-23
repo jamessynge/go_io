@@ -235,9 +235,9 @@ func SortPaths(paths []string) {
 		paths[i], paths[j] = paths[j], paths[i]
 	}
 	if glog.V(2) {
-		Sort3(len(paths), less2, swap)
+		goioutil.Sort3(len(paths), less2, swap)
 	} else {
-		Sort3(len(paths), less, swap)
+		goioutil.Sort3(len(paths), less, swap)
 	}
 
 	if glog.V(1) {

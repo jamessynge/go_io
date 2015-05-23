@@ -1,7 +1,6 @@
 package fileio
 
 import (
-	"compress/gzip"
 	"io"
 	"os"
 	"strings"
@@ -52,7 +51,6 @@ func OpenReadFileAndPump(filePath string) (io.ReadCloser, error) {
 	if err != nil {
 		return nil, err
 	}
-	glog.V(1).Infof("Opened file for reading: %s", filePath)
 	blockSize, blockCount := 4096, 16
 	if strings.HasSuffix(filePath, ".gz") {
 		glog.V(1).Infof("Opened compressed file for reading: %s", filePath)
@@ -60,11 +58,6 @@ func OpenReadFileAndPump(filePath string) (io.ReadCloser, error) {
 		// (not sure what the "right" ratio is, if such a thing exists).
 		blockCount /= 2
 		rc = pumpio.NewReadCloserPump(rc, blockSize, blockCount)
-		gr, err2 := gzip.NewReader(rc)
-		if err2 != nil {
-			rc.Close()
-			return nil, err2
-		}
 		rc, err = gzipio.NewReadCloser(rc)
 		if err != nil {
 			return nil, err

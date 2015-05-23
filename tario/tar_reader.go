@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/golang/glog"
+	"github.com/jamessynge/go_io/fileio"
 )
 
 // Function that will be called for each entry. body is only valid while in
@@ -44,7 +45,7 @@ func ProcessTarEntries(tr *tar.Reader, ef EntryFunc) error {
 
 // Reads a Tape ARchive, passing entries to a function one at a time.
 func ProcessTarFile(archivePath string, ef EntryFunc) error {
-	rc, err := OpenReadFile(archivePath)
+	rc, err := fileio.OpenReadFile(archivePath)
 	if err != nil {
 		return err
 	}

@@ -3,9 +3,7 @@ package glogext
 import (
 	"flag"
 	"fmt"
-	"io"
 	"os"
-	"runtime"
 
 	"github.com/golang/glog"
 

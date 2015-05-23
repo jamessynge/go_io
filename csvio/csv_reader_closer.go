@@ -59,7 +59,7 @@ func OpenReadCsvFile(filePath string) (crc *CsvReaderCloser, err error) {
 
 func OpenReadCsvFileAndPump(filePath string) (crc *CsvReaderCloser, err error) {
 	// Open the file for reading.
-	rc, err := OpenReadFileAndPump(filePath)
+	rc, err := fileio.OpenReadFileAndPump(filePath)
 	if err != nil {
 		return
 	}

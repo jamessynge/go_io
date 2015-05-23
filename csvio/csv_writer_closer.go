@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/golang/glog"
+	"github.com/jamessynge/go_io/fileio"
 )
 
 type CsvWriteCloser struct {
@@ -36,7 +37,7 @@ func OpenCsvWriteCloser(
 	glog.V(1).Infof("OpenCsvWriteCloser(%q, compress=%v, delExisting=%v, %b)",
 		filePath, compress, delExisting, perm)
 
-	if delExisting && Exists(filePath) {
+	if delExisting && fileio.Exists(filePath) {
 		if err := os.Remove(filePath); err == nil {
 			glog.V(1).Infof("Deleted existing file %s", filePath)
 		} else {
