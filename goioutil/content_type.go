@@ -34,7 +34,7 @@ func MayBeTruncatedUtf8(buf []byte) bool {
 }
 
 // Do the bytes b contain only graphic ASCII or only graphic UTF-8, including
-// white space characters.
+// white space characters such as space, tab, carriage return and and new line.
 func IsGraphicAsciiOrUtf8(b []byte) (isGraphicAscii, isGraphicUtf8 bool) {
 	// Assume it is OK, until we prove otherwise.
 	isGraphicAscii = true
